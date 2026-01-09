@@ -1,0 +1,15 @@
+# Enable Taskbar Auto-Hide on All Monitors (Win11)
+$regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3"
+if (Test-Path $regPath) {
+    $settings = (Get-ItemProperty -Path $regPath).Settings
+    if ($settings -and $settings.Length -ge 9) {
+        $settings[8] = 1  # Set auto-hide ON
+        Set-ItemProperty -Path $regPath -Name "Settings" -Value $settings
+        Write-Host "Taskbar auto-hide enabled. Restarting Explorer..."
+        Stop-Process -Name explorer -Force
+    } else {
+        Write-Host "Settings data invalid."
+    }
+} else {
+    Write-Host "Registry path not found."
+}
